@@ -1,0 +1,30 @@
+@Library('BuildLib_v2@crp')
+import com.allianz.gdf.jenkins.*
+def load_env() {
+  String deploy_to = "prod"
+  valuesJSON = readJSON (file: './ci/azure-env.json')
+  env.AZURE_JENKINS_SP_ID = valuesJSON[deploy_to]["jenkinsSPId"]
+  env.AZURE_ACCOUNT_ID = valuesJSON[deploy_to]["jenkinsSPId"] //helm stage is using this
+  env.AZURE_SUBSCRIPTION_ID = valuesJSON[deploy_to]["azureSubscriptionId"]
+  env.PROJECT = valuesJSON[deploy_to]["project"]
+  env.AKS_RESOURCE_GROUP = valuesJSON[deploy_to]["aksResourceGroup"]
+  env.AKS_CLUSTER_NAME = valuesJSON[deploy_to]["aksCluster"]
+  env.HELM_RELEASE= valuesJSON[deploy_to]["release"]
+  env.HELM_CHART= valuesJSON[deploy_to]["chart"]
+  env.HELM_NAMESPACE= valuesJSON[deploy_to]["namespace"]
+  env.HELM_CUSTOM_VALUES_FILE= valuesJSON[deploy_to]["customValuesFile"]
+}
+
+node('azure-cli') {
+  def preset = Presets.AZURE_HELM_DEPLOY
+  def build = new com.allianz.gdf.jenkins.PresetAzureHelmDeploy(this, preset)
+  build.source.run()
+  stage('Set environments') {
+    load_env()
+  }
+  build.applyEnv()
+  build.azureLogin.run()
+  build.azureAksCredentials.run()
+  build.helmDeploy.run()
+  build.azureLogout.run()
+}

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: a #used as APP name in deployment
+description: Helm Chart for deploying bff applications
+type: application
+version: 0.1.0
+kubeVersion: ">=1.15.0"
+appVersion: 0.4.0

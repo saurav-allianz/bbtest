@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.app.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.app.serviceAccount.name | default (include "app.name" .) }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.app.image.registry }}/{{ include "app.name" . }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          command: ["java"]
+          args:
+            - '-jar'
+            - '/jar/{{ .Values.app.jarName }}.jar'
+            - '--spring.profiles.active={{ .Values.app.springProfiles }}'          
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+          envFrom:	
+            - configMapRef:	
+                name: {{ include "app.name" . }}

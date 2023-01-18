@@ -1,0 +1,6 @@
+<configuration>
+  <property name="APP_NAME" value="bff-template"/>
+
+  <include resource="logback/logback-include-local.xml"/>
+
+</configuration>

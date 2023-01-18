@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: ITMP Motor Onboarding API - Vehicle Search
+  description: |
+    The Vehicle search APIs provide contract between the motor onboarding frontend (mo-fe)
+    and the motor onboarding BFF (mo-bff).
+  version: 1.0.0-Draft
+tags:
+  - name: Vehicle Search
+    description: APIs to query vehicle properties and vehicle model.
+paths:
+  /vehicles/brands:
+    get:
+      summary: Lists all available brands
+      operationId: vehicleBrands
+      responses:
+        '200':
+          description: Returns the list of brands
+          content:
+            application/json:
+              schema:
+                $ref: 'itmp-mo-models.yaml#/components/schemas/DataOptionList'
+              example:
+                values: [{ "value": "BMW","label": "BMW"}]
+        '400':
+          $ref: 'itmp-mo-models.yaml#/components/responses/ClientError'
+        '500':
+          $ref: 'itmp-mo-models.yaml#/components/responses/ServerError'
+      tags:
+        - Vehicle Search

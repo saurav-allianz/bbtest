@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "a"
+  description: "a"
+  annotations:
+    github.com/project-slug: test/bbtest
+    backstage.io/techdocs-ref: dir:.
+    jenkins.io/job-full-name: 'testjenkins'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: "all_devs"
+  providesApis:
+    - vehicle-brands-sample

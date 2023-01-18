@@ -1,0 +1,20 @@
+{
+  "name": "@allianz/{ARTIFACT}",
+  "version": "1.0.0-alpha.17",
+  "description": "This module contains the Open API definitions for the journey",
+  "devDependencies": {
+    "@stoplight/spectral": "^5.3.0"
+  },
+  "scripts": {
+    "lint:swagger": "spectral lint ./src/main/resources/swagger/**",
+    "clean:dist": "rm -rf dist",
+    "mk:dist": "mkdir -p dist/swagger",
+    "copy:swagger": "cp src/main/resources/swagger/* dist/swagger",
+    "copy:package": "cp package.json README.md dist",
+    "build": "npm run clean:dist && npm run mk:dist && npm run copy:swagger && npm run copy:package"
+  },
+  "publishConfig": {
+    "registry": "https://nexus-gcj.apps.crp-gate.ec1.aws.aztec.azcs.io/repository/npm-public/"
+  }
+
+}

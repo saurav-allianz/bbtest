@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: vehicle-brands-sample
+  description: Vehicle Search
+  annotations:
+    openapi/ref-basepath: ./swagger
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: user
+  definition:
+    $openapi: ./swagger/swagger-itmp-mo-vehicle.yaml

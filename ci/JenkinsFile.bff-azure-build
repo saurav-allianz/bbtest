@@ -1,0 +1,27 @@
+@Library('BuildLib_v2@crp')
+import com.allianz.gdf.jenkins.*
+def load_env() {
+  String deploy_to = "prod"
+  valuesJSON = readJSON (file: './ci/azure-env.json')
+  env.AZURE_JENKINS_SP_ID = valuesJSON[deploy_to]["jenkinsSPId"]
+  env.AZURE_SUBSCRIPTION_ID = valuesJSON[deploy_to]["azureSubscriptionId"]
+  env.PROJECT = valuesJSON[deploy_to]["project"]
+  env.ACR_REGISTRY_NAME = valuesJSON[deploy_to]["acrRegistry"]
+  env.ACR_RESOURCE_GROUP = valuesJSON[deploy_to]["acrResourceGroup"]
+}
+
+node('azure-build-maven-jdk11') {
+  def preset = Presets.JAVA_STAGING_AZURE
+  def build = new com.allianz.gdf.jenkins.PresetJavaStagingAzure(this, preset)
+  build.source.run()
+  stage('Set environments') {
+    load_env()
+    build.applyEnv()
+  }
+  build.build.run()
+  build.tag.run()
+  build.azureLogin.run() 
+  build.azureAcrBuild.dockerFilePath="ci/build/Dockerfile"
+  build.azureAcrBuild.run()
+  build.azureLogout.run()
+}

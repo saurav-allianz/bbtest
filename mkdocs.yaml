@@ -1,0 +1,7 @@
+site_name: 'BFF_DOCS'
+
+nav:
+  - Home: index.md
+
+plugins:
+  - techdocs-core
